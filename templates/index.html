@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuroto</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('/static/background.png'); 
+            background-repeat: repeat;
+            background-size: cover;
+            background-position: top;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Style for the logo */
+        .logo-container {
+            text-align: center; /* Center the logo and heading */
+            margin-bottom: 20px; /* Add space below the logo */
+        }
+
+        .logo-container img {
+            width: 250px; /* Adjust the size of the logo */
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Remove any inline spacing */
+            margin: 0 auto; /* Center the logo */
+        }
+
+        /* Style for the heading */
+        .logo-heading {
+            font-family: 'Montserrat', sans-serif; /* Use a modern font */
+            font-size: 36px; /* Adjust the font size */
+            color: #0b6a8a; /* Neon blue color for the heading */
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7); /* Add a subtle shadow for depth */
+            margin: 0; /* Remove default margin */
+            padding: 10px; /* Add padding around the text */
+            text-transform: uppercase; /* Make text uppercase */
+            letter-spacing: 2px; /* Add spacing between letters */
+            font-weight: bold; /* Make the font bold */
+
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            background: #1f1f1f;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        input[type="file"], input[type="text"] {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #333;
+            background: #222;
+            color: #e0e0e0;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #00bfff; /* Neon blue */
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #009acd; /* Darker neon blue */
+        }
+        #result {
+            text-align: center;
+        }
+        .photo-container {
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #333;
+            padding: 10px;
+            position: relative; /* Added to position text correctly */
+        }
+        .photo-container img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .photo-info {
+            margin-top: 10px;
+            text-align: left; /* Align text to the left */
+            padding: 0 10px; /* Add padding to align with image */
+        }
+        .username {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px; /* Add margin for spacing */
+        }
+        .caption, .objects {
+            font-size: 16px;
+            color: #ffffff; /* Corrected color */
+        }
+        .objects {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo-container">
+            <img src="static/logo.png" alt="Neuroto Logo"/>
+            <h1 class="logo-heading">Neuroto</h1>
+        </div>
+        <h2>Upload an Image</h2>
+        <form id="uploadForm">
+            <input type="file" id="file" name="file" accept="image/*" required><br>
+            <input type="text" id="username" name="username" placeholder="Enter your username" required><br>
+            <button type="submit">Upload</button>
+        </form>
+        <div id="result"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const formData = new FormData();
+            formData.append('username', document.getElementById('username').value);
+            formData.append('file', document.getElementById('file').files[0]);
+
+            axios.post('http://localhost:5000/upload', formData)
+                .then(response => {
+                    const resultDiv = document.getElementById('result');
+                    const objects = response.data.objects.length ? response.data.objects.join(', ') : 'None detected';
+                    resultDiv.innerHTML = `
+                        <div class="photo-container">
+                            <img src="${URL.createObjectURL(document.getElementById('file').files[0])}" alt="Uploaded Image" />
+                            <div class="photo-info">
+                                <div class="username">${document.getElementById('username').value}</div>
+                                <div class="caption">${response.data.class}: ${objects}</div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    console.error('Error uploading the image:', error);
+                });
+        });
+    </script>
+</body>
+</html>
