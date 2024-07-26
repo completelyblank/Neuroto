@@ -50,15 +50,6 @@ The deep neural network (DNN) used in Neuroto is a convolutional neural network 
    - **Challenge**: Balancing model accuracy with real-time performance.
    - **Solution**: Optimized the model by reducing its size and complexity while maintaining accuracy.
 
-## Installation
-
-### Prerequisites
-
-Ensure you have the following installed:
-
-- [Python 3.x](https://www.python.org/downloads/)
-- [Node.js and npm](https://nodejs.org/)
-
 ### Clone the Repository
 
 ```bash
